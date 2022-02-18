@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"net"
@@ -9,7 +10,19 @@ import (
 	"google.golang.org/grpc"
 )
 
-func (s *server) mustEmbedUnimplementedGreetServiceServer() {}
+// func (s *server) mustEmbedUnimplementedGreetServiceServer() {}
+func (*server) Greet(ctx context.Context, req *greetpb.GreetRequest) (*greetpb.GreetResponse, error) {
+	fmt.Printf("Greet fxn was invoked %v\n", req)
+	// Extracting data from the request
+	firstName := req.GetGreeting().GetFirstName()
+	result := "Hello " + firstName // declares to be of tyope string as required in the Respone struct
+
+	// Creating our response message
+	res := &greetpb.GreetResponse{
+		Result: result,
+	}
+	return res, nil
+}
 
 type server struct {
 	greetpb.UnimplementedGreetServiceServer
