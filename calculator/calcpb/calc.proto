@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package calc;
+option go_package= "./calcpb";
+
+
+message SumReq{
+    int32 a=1;
+    int32 b=2;
+}
+
+message SumRes{
+    int32 res=1;
+}
+
+service Calc{
+    // Unary api
+    rpc Add(SumReq) returns (SumRes) {}
+}
