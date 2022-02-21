@@ -5,12 +5,14 @@ import (
 	"fmt"
 	"log"
 	"net"
+	"strconv"
+	"time"
 
 	"github.com/gRPC-Go/greet/greetpb"
 	"google.golang.org/grpc"
 )
 
-// func (s *server) mustEmbedUnimplementedGreetServiceServer() {}
+// Greeting function endpoint handled by server
 func (*server) Greet(ctx context.Context, req *greetpb.GreetRequest) (*greetpb.GreetResponse, error) {
 	fmt.Printf("Greet fxn was invoked %v\n", req)
 	// Extracting data from the request
@@ -22,6 +24,22 @@ func (*server) Greet(ctx context.Context, req *greetpb.GreetRequest) (*greetpb.G
 		Result: result,
 	}
 	return res, nil
+}
+
+// Greeting many times endpoint handled by the server
+func (*server) GreetManyTimes(req *greetpb.GreetManyRequest, stream greetpb.GreetService_GreetManyTimesServer) error {
+	fmt.Printf("GreetManyTimes function was invoked with %v\n", req)
+	for i := 0; i < 10; i++ {
+		result := "Hello " + req.GetGreeting().GetFirstName() + " " + req.Greeting.GetLastName() + " time " + strconv.Itoa(i)
+		response := &greetpb.GreetManyResponse{
+			Result: result,
+		}
+
+		stream.Send(response)
+		time.Sleep(1000 * time.Millisecond)
+	}
+
+	return nil
 }
 
 type server struct {
