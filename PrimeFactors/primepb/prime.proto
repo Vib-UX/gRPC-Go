@@ -1,0 +1,17 @@
+syntax="proto3";
+
+package primeDecompo;
+option go_package = "./primepb";
+
+message NumReq{
+    int64 num=1;
+}
+
+message Res{
+    int32 facto=1;
+}
+
+service PrimeDecompo{
+    // Server streaming api
+    rpc prime(NumReq) returns (stream Res){};
+}
