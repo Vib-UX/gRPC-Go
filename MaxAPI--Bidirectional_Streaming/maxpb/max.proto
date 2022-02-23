@@ -1,0 +1,16 @@
+syntax="proto3";
+
+package maxpb;
+option go_package = "./maxpb";
+
+message Req{
+    int32 Num=1;
+}
+message Res{
+    int32 Max=1;
+}
+
+service API{
+    // BiDi streaming 
+    rpc FindMax(stream Req) returns (stream Res){}
+}
