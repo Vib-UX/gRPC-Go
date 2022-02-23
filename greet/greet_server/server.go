@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"io"
 	"log"
 	"net"
 	"strconv"
@@ -40,6 +41,27 @@ func (*server) GreetManyTimes(req *greetpb.GreetManyRequest, stream greetpb.Gree
 	}
 
 	return nil
+}
+
+// GreetEveryone handled by the server
+func (*server) GreetEveryone(stream greetpb.GreetService_GreetEveryoneServer) error {
+	fmt.Printf("GreetEveryone function was invoked with streaming req \n")
+	for {
+		req, err := stream.Recv()
+		if err == io.EOF {
+			return nil
+		}
+		if err != nil {
+			log.Fatalf("Error in receiving the stream %v\n", err)
+		}
+		result := "Hello " + req.GetGreeting().GetFirstName() + " !"
+		if recErr := stream.Send(&greetpb.GreetEveryoneResponse{
+			Result: result,
+		}); recErr != nil {
+			log.Fatalf("Error while sending the data to client %v\n", recErr)
+			return recErr
+		}
+	}
 }
 
 type server struct {

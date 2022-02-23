@@ -24,10 +24,21 @@ message GreetManyResponse{
     string result=1;
 }
 
+message GreetEveryoneRequest{
+    Greeting greeting =1;
+}
+
+message GreetEveryoneResponse{
+    string result =1;
+}
+
 service GreetService{
     // Unary api
     rpc Greet(GreetRequest) returns (GreetResponse) {};
 
     // Server streaming api
     rpc GreetManyTimes(GreetManyRequest) returns (stream GreetManyResponse){};
+
+    //Bidirectional streaming
+    rpc GreetEveryone(stream GreetEveryoneRequest) returns (stream GreetEveryoneResponse){};
 }
